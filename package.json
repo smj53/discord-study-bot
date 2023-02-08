@@ -1,0 +1,24 @@
+{
+  "name": "discord-study-bot",
+  "version": "1.0.0",
+  "description": "discord bot for study",
+  "main": "src/index.js",
+  "author": "chshin59",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "commands": "node ./src/deploy-commands.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.33.0",
+    "prettier": "^2.8.3"
+  }
+}
