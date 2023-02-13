@@ -51,17 +51,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-  let message = "";
   const user = await client.users.fetch(newState.id);
   const channel = await client.channels.fetch(botChannelId);
 
   if (oldState.channelId && !newState.channelId) {
-    message = `@everyone ${user.username} 님이 나감`;
+    const message = `@everyone ${user.username} 님이 나감`;
+    channel.send(message);
+    // TODO: Notion 모각코 입장 페이지 생성
   } else if (!oldState.channelId && newState.channelId) {
-    message = `@everyone ${user.username} 님이 들어옴`;
+    // TODO: Notion 모각코 퇴장 페이지 생성
   }
-
-  channel.send(message);
 });
 
 //
