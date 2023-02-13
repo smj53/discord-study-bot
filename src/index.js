@@ -8,7 +8,12 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
 });
 
-//
+// 앱 실행
+client.once(Events.ClientReady, (c) => {
+  console.log(`Ready! Logged in as ${c.user.tag}`);
+});
+
+// Commands 불러오기
 client.commands = new Collection();
 const commandFiles = getCommandFiles();
 commandFiles.forEach(async (file) => {
@@ -24,11 +29,7 @@ commandFiles.forEach(async (file) => {
   }
 });
 
-//
-client.once(Events.ClientReady, (c) => {
-  console.log(`Ready! Logged in as ${c.user.tag}`);
-});
-
+// Commands 등록
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
@@ -50,6 +51,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+// Events 등록
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   const user = await client.users.fetch(newState.id);
   const channel = await client.channels.fetch(botChannelId);
@@ -63,5 +65,5 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   }
 });
 
-//
+// 로그인
 client.login(token);
