@@ -9,7 +9,7 @@ const userSettingPath = path.join(__dirname, ".user-setting");
 let userSettingMap;
 
 // TODO: not real enum (the value can be changed)
-export const SettingProperty = {
+const SettingProperty = {
   NAME: "name",
   NOTION_ID: "notionId",
   DURATION: "duration",
@@ -19,8 +19,9 @@ export function init() {
   const file = fs.readFileSync(userSettingPath);
   if (file) {
     userSettingMap = JSON.parse(file.toString());
+  } else {
+    console.log("[WARNING] No .user-setting");
   }
-  console.log("[WARNING] No .user-setting");
 }
 
 export function getName(id) {

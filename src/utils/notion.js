@@ -2,7 +2,7 @@ import { Client } from "@notionhq/client";
 import { getCurrentKoreanTime, getKorISOString } from "../utils/time.js";
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
-const databaseId = "d1b28a88d286408a923301b3d82a30de";
+const databaseId = "25684024fb2b498f962b6ee7abed223f";
 
 export async function readDatabase() {
   const response = await notion.databases.query({
@@ -13,7 +13,7 @@ export async function readDatabase() {
 }
 
 /**
- * Create a study page in notion
+ * Create a study page in [notion](www.notion.so/25684024fb2b498f962b6ee7abed223f)
  * @param {string} name user who starts a study session
  * @param {string} notionUserId id of the user
  * @param {Date} startTime when the session is started

@@ -8,8 +8,7 @@ import { getName, getDuration, getNotionId } from "./setting.js";
 
 const sessionMap = new Map();
 
-export async function startStudy(user) {
-  const userId = user.id;
+export async function startStudy(userId) {
   let studySession = sessionMap.get(userId);
   const duration = getDuration(userId) * 60 * 1000;
   const now = new Date();
@@ -19,8 +18,15 @@ export async function startStudy(user) {
     !studySession.endTime ||
     now - studySession.endTime > duration // if the time passed enough since the user finished their study session
   ) {
-    page = await createStudyPage(getName(userId), getNotionId(userId), now);
-    if (!page) {
+    try {
+      page = await createStudyPage(getName(userId), getNotionId(userId), now);
+      if (!page) {
+        return false;
+      }
+    } catch (error) {
+      console.error(
+        `src/utils/study.js::startStudy(${userId}) > ${error.code}: ${error.message}`
+      );
       return false;
     }
 
@@ -37,8 +43,7 @@ export async function startStudy(user) {
   return true;
 }
 
-export async function endStudy(user) {
-  const userId = user.id;
+export async function endStudy(userId) {
   const studySession = sessionMap.get(userId);
   if (studySession === undefined) {
     return false;
@@ -62,8 +67,10 @@ export async function endStudy(user) {
   try {
     await updateEndTime(studySession.pageId, now);
   } catch (error) {
+    console.error(
+      `src/utils/study.js::endStudy(${userId}) ${error.code}: ${error.message}`
+    );
     if (error.status === 400) {
-      console.error(`src/utils/study.js: ${error.code}: ${error.message}`);
       // notion page is deleted before the user finishes their study session
       sessionMap.delete(userId);
     }
