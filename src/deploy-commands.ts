@@ -1,6 +1,5 @@
 import { REST, Routes } from "discord.js";
-import { clientId, guildId, token } from "./utils/dotenv.js";
-import { getCommandFiles } from "./utils/index.js";
+import { clientId, guildId, token, getCommandFiles } from "./utils/index.js";
 
 const commands = [];
 const commandFiles = getCommandFiles();
@@ -21,7 +20,7 @@ const rest = new REST({ version: "10" }).setToken(token);
     );
 
     // The put method is used to fully refresh all commands in the guild with the current set
-    const data = await rest.put(
+    const data: any = await rest.put(
       Routes.applicationGuildCommands(clientId, guildId),
       { body: commands }
     );

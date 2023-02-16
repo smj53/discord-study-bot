@@ -1,14 +1,29 @@
-import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
-import { token } from "./utils/dotenv.js";
-import { getCommandFiles } from "./utils/index.js";
+import {
+  BaseInteraction,
+  Client,
+  Collection,
+  Events,
+  GatewayIntentBits,
+  SlashCommandBuilder,
+  TextChannel,
+} from "discord.js";
+import { botChannelId, token, getCommandFiles } from "./utils/index.js";
 import { startStudy, endStudy } from "./utils/study.js";
 import { init as settingInit } from "./utils/setting.js";
 
-const botChannelId = "1072156767980625950";
+// TODO: move types to utils folder
+class DiscordClient extends Client {
+  public commands?: Collection<string, Command>;
+}
+
+interface Command {
+  data: SlashCommandBuilder;
+  execute: (interaction: BaseInteraction) => Promise<void>;
+}
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
-});
+}) as DiscordClient;
 
 // 앱 실행
 client.once(Events.ClientReady, (c) => {
@@ -20,10 +35,10 @@ client.commands = new Collection();
 const commandFiles = getCommandFiles();
 commandFiles.forEach(async (file) => {
   const filePath = `./commands/${file}`;
-  const command = await import(filePath);
+  const command: Command = await import(filePath);
 
   if ("data" in command && "execute" in command) {
-    client.commands.set(command.data.name, command);
+    client.commands?.set(command.data.name, command);
   } else {
     console.log(
       `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
@@ -35,7 +50,9 @@ commandFiles.forEach(async (file) => {
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
-  const command = interaction.client.commands.get(interaction.commandName);
+  const command = (interaction.client as DiscordClient).commands?.get(
+    interaction.commandName
+  );
 
   if (!command) {
     console.error(`No command matching ${interaction.commandName} was found.`);
@@ -59,14 +76,19 @@ settingInit();
 // Events 등록
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   const user = await client.users.fetch(newState.id);
-  const channel = await client.channels.fetch(botChannelId);
+  const channel = (await client.channels.fetch(botChannelId)) as TextChannel;
+  if (!channel) return;
 
-  if (oldState.channelId && !newState.channelId) {
-    const message = `@everyone ${user.username} 님이 나감`;
+  // Voice 채널 입장
+  if (!oldState.channelId && newState.channelId) {
+    const message = `@everyone ${user.username} 님이 입장`;
     channel.send(message);
-    await endStudy(user.id);
-  } else if (!oldState.channelId && newState.channelId) {
     await startStudy(user.id);
+  }
+
+  // Voice 채널 퇴장
+  else if (oldState.channelId && !newState.channelId) {
+    await endStudy(user.id);
   }
 });
 
