@@ -11,6 +11,7 @@
     "test": "test"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.3",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "fs": "^0.0.1-security",

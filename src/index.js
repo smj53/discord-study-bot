@@ -1,6 +1,8 @@
 import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
 import { token } from "./utils/dotenv.js";
 import { getCommandFiles } from "./utils/index.js";
+import { startStudy, endStudy } from "./utils/study.js";
+import { init as settingInit } from "./utils/setting.js";
 
 const botChannelId = "1072156767980625950";
 
@@ -51,6 +53,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+// 설정 불러오기
+settingInit();
+
 // Events 등록
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   const user = await client.users.fetch(newState.id);
@@ -59,9 +64,9 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   if (oldState.channelId && !newState.channelId) {
     const message = `@everyone ${user.username} 님이 나감`;
     channel.send(message);
-    // TODO: Notion 모각코 입장 페이지 생성
+    await endStudy(user.id);
   } else if (!oldState.channelId && newState.channelId) {
-    // TODO: Notion 모각코 퇴장 페이지 생성
+    await startStudy(user.id);
   }
 });
 
