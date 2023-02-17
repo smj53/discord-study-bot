@@ -6,7 +6,7 @@ const DEFAULT = "default";
 
 const __dirname = url.fileURLToPath(new URL("../..", import.meta.url));
 const userSettingPath = path.join(__dirname, ".user-setting");
-let userSettingMap;
+let userSettingMap: any;
 
 // TODO: not real enum (the value can be changed)
 const SettingProperty = {
@@ -24,19 +24,19 @@ export function init() {
   }
 }
 
-export function getName(id) {
+export function getName(id: string) {
   return getProperty(id, SettingProperty.NAME);
 }
 
-export function getNotionId(id) {
+export function getNotionId(id: string) {
   return getProperty(id, SettingProperty.NOTION_ID);
 }
 
-export function getDuration(id) {
+export function getDuration(id: string) {
   return getProperty(id, SettingProperty.DURATION);
 }
 
-function getProperty(id, property) {
+function getProperty(id: string, property: string) {
   if (!userSettingMap) {
     return undefined;
   }

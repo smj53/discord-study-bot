@@ -19,8 +19,12 @@ export async function readDatabase() {
  * @param {Date} startTime when the session is started
  * @returns
  */
-export async function createStudyPage(name, notionUserId, startTime) {
-  const korStartTime = getCurrentKoreanTime(startTime);
+export async function createStudyPage(
+  name: string,
+  notionUserId: string,
+  startTime: Date
+) {
+  const korStartTime = getCurrentKoreanTime();
   const response = await createPage({
     parent: {
       type: "database_id",
@@ -59,7 +63,7 @@ export async function createStudyPage(name, notionUserId, startTime) {
  * @param {string} pageId page id of the notion page
  * @param {Date} endTime
  */
-export async function updateEndTime(pageId, endTime) {
+export async function updateEndTime(pageId: string, endTime: Date) {
   await updatePage({
     page_id: pageId,
     properties: {
@@ -74,29 +78,29 @@ export async function updateEndTime(pageId, endTime) {
   });
 }
 
-export async function deleteBlock(blockId) {
+export async function deleteBlock(blockId: string) {
   await catchCommonError(notion.blocks.delete, { block_id: blockId });
 }
 
-export async function restorePage(pageId) {
+export async function restorePage(pageId: string) {
   await updatePage({
     page_id: pageId,
     archived: false,
   });
 }
 
-async function createPage(obj) {
+async function createPage(obj: any) {
   return await catchCommonError(notion.pages.create, obj);
 }
 
-async function updatePage(obj) {
+async function updatePage(obj: any) {
   await catchCommonError(notion.pages.update, obj);
 }
 
-async function catchCommonError(func, obj) {
+async function catchCommonError(func: any, obj: any) {
   try {
     return await func(obj);
-  } catch (error) {
+  } catch (error: any) {
     if (error.status === 401) {
       // invalid token key
       console.error(`src/utils/notion.js: ${error.code}: ${error.message}`);
