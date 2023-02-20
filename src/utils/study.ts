@@ -8,22 +8,30 @@ import { getName, getDuration, getNotionId } from "./setting.js";
 
 const sessionMap = new Map();
 
-export async function startStudy(userId) {
-  let studySession = sessionMap.get(userId);
+// TODO: move types to utils folder
+interface StudySession {
+  pageId: string;
+  startTime: Date;
+  endTime?: Date;
+  isEarlyEnded?: boolean;
+}
+
+export async function startStudy(userId: string) {
+  let studySession: StudySession | undefined = sessionMap.get(userId);
   const duration = getDuration(userId) * 60 * 1000;
   const now = new Date();
-  let page;
+  let page: any;
   if (
     studySession === undefined ||
     !studySession.endTime ||
-    now - studySession.endTime > duration // if the time passed enough since the user finished their study session
+    now.getTime() - studySession.endTime.getTime() > duration // if the time passed enough since the user finished their study session
   ) {
     try {
       page = await createStudyPage(getName(userId), getNotionId(userId), now);
       if (!page) {
         return false;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         `src/utils/study.js::startStudy(${userId}) > ${error.code}: ${error.message}`
       );
@@ -43,8 +51,8 @@ export async function startStudy(userId) {
   return true;
 }
 
-export async function endStudy(userId) {
-  const studySession = sessionMap.get(userId);
+export async function endStudy(userId: string) {
+  const studySession: StudySession | undefined = sessionMap.get(userId);
   if (studySession === undefined) {
     return false;
   }
@@ -52,7 +60,7 @@ export async function endStudy(userId) {
   const now = new Date();
   studySession.endTime = now;
   const duration = getDuration(userId) * 60 * 1000;
-  if (now - studySession.startTime <= duration) {
+  if (now.getTime() - studySession.startTime.getTime() <= duration) {
     // too short study session - ignore
     studySession.isEarlyEnded = true;
     try {
@@ -66,7 +74,7 @@ export async function endStudy(userId) {
 
   try {
     await updateEndTime(studySession.pageId, now);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       `src/utils/study.js::endStudy(${userId}) ${error.code}: ${error.message}`
     );

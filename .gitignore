@@ -1,4 +1,5 @@
-node_modules
-.vscode
 .env
+.vscode
 .user-setting
+node_modules
+out
