@@ -1,11 +1,17 @@
 import { REST, Routes } from "discord.js";
-import { clientId, guildId, token, getCommandFiles } from "./utils/index.js";
+import {
+  CLIENT_ID,
+  commandsPath,
+  DISCORD_TOKEN,
+  getFiles,
+  GUILD_ID,
+} from "./utils/index.js";
 
 const commands = [];
-const commandFiles = getCommandFiles();
+const commandFiles = getFiles(commandsPath);
 
 // Construct and prepare an instance of the REST module
-const rest = new REST({ version: "10" }).setToken(token);
+const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 
 // and deploy your commands!
 (async () => {
@@ -21,7 +27,7 @@ const rest = new REST({ version: "10" }).setToken(token);
 
     // The put method is used to fully refresh all commands in the guild with the current set
     const data: any = await rest.put(
-      Routes.applicationGuildCommands(clientId, guildId),
+      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
       { body: commands }
     );
 

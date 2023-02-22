@@ -1,33 +1,21 @@
 import * as url from "url";
 import * as path from "path";
 import * as fs from "fs";
-import dotenv from "dotenv";
 
-dotenv.config();
+const botChannelId = "1072156767980625950";
+const loungeChannelId = "1068129906686439438";
+const databaseId = "d1b28a88d286408a923301b3d82a30de";
 
-// 경로
 const rootPath = url.fileURLToPath(new URL("../..", import.meta.url));
-const commandsPath = path.join(rootPath, "out", "commands");
+const commandsPath = path.join(rootPath, "out", "discord", "commands");
+const eventsPath = path.join(rootPath, "out", "discord", "events");
+const userSettingPath = path.join(rootPath, ".user-setting");
 
-// 환경 변수 & 상수
-export const token = typeGuard(process.env.DISCORD_TOKEN);
-export const clientId = typeGuard(process.env.CLIENT_ID);
-export const guildId = typeGuard(process.env.GUILD_ID);
+export { botChannelId, loungeChannelId, databaseId };
+export { commandsPath, eventsPath, userSettingPath };
+export { DISCORD_TOKEN, CLIENT_ID, GUILD_ID, NOTION_TOKEN } from "./dotenv.js";
 
-export const botChannelId = "1072156767980625950";
-
-// 유틸 함수
-// TODO: change function name
-function typeGuard(env: string | undefined) {
-  if (typeof env === "string") {
-    return env;
-  }
-  throw new Error("no env error");
-}
-
-export function getCommandFiles() {
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".js"));
-  return commandFiles;
+export function getFiles(path: string) {
+  const files = fs.readdirSync(path).filter((file) => file.endsWith(".js"));
+  return files;
 }
