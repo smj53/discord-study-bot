@@ -8,8 +8,7 @@
   "scripts": {
     "start": "npm run build && node ./out/index.js",
     "commands": "node ./out/deploy-commands.js",
-    "build": "tsc --build",
-    "deploy": "npm run build && npm run commands && npm run start"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.3",
