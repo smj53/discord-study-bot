@@ -17,6 +17,7 @@ import {
 export default class Discord {
   private static client: DiscordClient;
   public static botChannel: TextChannel;
+  public static alarmFlag: boolean = true;
 
   public static init(): void {
     const commands = this.fetchCommands();

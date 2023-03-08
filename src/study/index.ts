@@ -15,7 +15,9 @@ export default class Study {
   public static async start(userId: string) {
     const user = await Discord.fetchUser(userId);
     const botChannel = Discord.botChannel;
-    botChannel.send(`@everyone ${user.username} 님이 입장`);
+    if (Discord.alarmFlag) {
+      botChannel.send(`@everyone ${user.username} 님이 입장`);
+    }
 
     // let studySession: StudySession | undefined = this.sessionMap.get(user.id);
     // const duration = getDuration(user.id) * 60 * 1000;
