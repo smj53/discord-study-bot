@@ -31,13 +31,6 @@ export class DiscordClient extends Client {
 
 export { DiscordUser, NotionUser };
 
-export interface UserData {
-  name: string;
-  duration: number;
-  discord: DiscordUser;
-  notion: NotionUser;
-}
-
 // User {
 //   name: "홍길동",  // 본명
 //   duration: 5,
