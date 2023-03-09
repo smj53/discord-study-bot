@@ -1,6 +1,6 @@
 import { Client } from "@notionhq/client";
 import { getCurrentKoreanTime, getKorISOString } from "../utils/time.js";
-import { databaseId, NOTION_TOKEN } from "../utils/index.js";
+import { studytimeDatabaseId, NOTION_TOKEN } from "../utils/index.js";
 
 export default class Notion {
   private static notion: Client;
@@ -34,7 +34,7 @@ export default class Notion {
     const response = await this.createPage({
       parent: {
         type: "database_id",
-        database_id: databaseId,
+        database_id: studytimeDatabaseId,
       },
       properties: {
         이름: {
@@ -55,8 +55,10 @@ export default class Notion {
           },
         },
         참여자: {
-          // type: "people",
           people: [{ object: "user", id: notionUserId }],
+        },
+        "휴식 시간 (분)": {
+          number: 0,
         },
       },
     });
