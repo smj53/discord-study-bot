@@ -9,12 +9,13 @@ export default class Notion {
     this.notion = new Client({ auth: NOTION_TOKEN });
   }
 
-  public static async readDatabase() {
+  public static async readDatabase(databaseId: string) {
     const response = await this.notion.databases.query({
       database_id: databaseId,
       // filter: {},
       // sorts: [],
     });
+    return response;
   }
 
   /**

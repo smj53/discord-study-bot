@@ -4,6 +4,6 @@ import User from "./user/index.js";
 
 Discord.init();
 Notion.init();
-User.init();
 
 Discord.run();
+User.init();

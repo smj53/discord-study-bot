@@ -24,4 +24,5 @@ $ npm run start
 DISCORD_TOKEN=
 CLIENT_ID=
 GUILD_ID=
+NOTION_TOKEN=
 ```
