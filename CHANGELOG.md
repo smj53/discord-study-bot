@@ -13,7 +13,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - ping -> pong
 - VoiceStateUpdate 이벤트 생성
   - voice 채널 입장/퇴장 시 봇 채널 알림
+  - notion 자동 업로드
 
 ### Changed
 
 - Typescript 전환
+- Class 사용

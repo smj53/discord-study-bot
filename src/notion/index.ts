@@ -30,7 +30,7 @@ export default class Notion {
     notionUserId: string,
     startTime: Date
   ) {
-    const korStartTime = getCurrentKoreanTime();
+    const korStartTime = getCurrentKoreanTime(startTime);
     const response = await this.createPage({
       parent: {
         type: "database_id",

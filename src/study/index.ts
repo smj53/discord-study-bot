@@ -34,7 +34,7 @@ export default class Study {
         }
       } catch (error: any) {
         console.error(
-          `src/utils/study.js::startStudy(${userId}) > ${error.code}: ${error.message}`
+          `src/study/index.ts::startStudy(${userId}) > ${error.code}: ${error.message}`
         );
         return false;
       }
@@ -73,7 +73,7 @@ export default class Study {
       await Notion.updateEndTime(studySession.pageId, now);
     } catch (error: any) {
       console.error(
-        `src/utils/study.js::endStudy(${userId}) ${error.code}: ${error.message}`
+        `src/study/index.ts::endStudy(${userId}) ${error.code}: ${error.message}`
       );
       if (error.status === 400) {
         // notion page is deleted before the user finishes their study session

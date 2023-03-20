@@ -6,7 +6,8 @@
 
 > 버전  
 > node: 18.12.1  
-> discord.js: 14.7.1
+> discord.js: 14.7.1  
+> @notionhq/client: 2.2.3
 
 ```bash
 $ npm install
