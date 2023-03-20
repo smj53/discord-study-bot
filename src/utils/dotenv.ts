@@ -9,6 +9,7 @@ function typeGuard(env: string | undefined) {
   throw new Error("env not found error");
 }
 
+export const NODE_ENV = process.env.NODE_ENV ?? "development"; // development or production
 export const DISCORD_TOKEN = typeGuard(process.env.DISCORD_TOKEN);
 export const CLIENT_ID = typeGuard(process.env.CLIENT_ID);
 export const GUILD_ID = typeGuard(process.env.GUILD_ID);

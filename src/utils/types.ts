@@ -29,6 +29,9 @@ export class DiscordClient extends Client {
   }
 }
 
+export type Name = string;
+export type Duration = number;
+
 export { DiscordUser, NotionUser };
 
 // User {

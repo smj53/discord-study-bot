@@ -18,28 +18,22 @@ export default class Discord {
   private static client: DiscordClient;
   public static botChannel: TextChannel;
 
-  public static init(): void {
-    const commands = this.fetchCommands();
-    const client = new DiscordClient(
+  public static async init(): Promise<void> {
+    const commands = await this.fetchCommands();
+    this.client = new DiscordClient(
       {
         intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
       },
       commands
     );
-    this.client = client;
+    await this.registerEvents();
+    await this.client.login(DISCORD_TOKEN);
+    await this.setBotChannel();
   }
 
-  public static run(): void {
-    (async () => {
-      this.registerEvents();
-      await this.client.login(DISCORD_TOKEN);
-      await this.setBotChannel();
-    })();
-  }
-
-  public static registerEvents(): void {
+  public static async registerEvents(): Promise<void> {
     const eventFiles = getFiles(eventsPath);
-    eventFiles.forEach(async (file) => {
+    for (const file of eventFiles) {
       const filePath = `./events/${file}`;
       const event: Event = await import(filePath);
 
@@ -53,13 +47,13 @@ export default class Discord {
       event.name === Events.ClientReady
         ? this.client.once(event.name, event.listener)
         : this.client.on(event.name, event.listener);
-    });
+    }
   }
 
-  private static fetchCommands(): Collection<string, Command> {
+  private static async fetchCommands(): Promise<Collection<string, Command>> {
     const commands: Collection<string, Command> = new Collection();
     const commandFiles = getFiles(commandsPath);
-    commandFiles.forEach(async (file) => {
+    for (const file of commandFiles) {
       const filePath = `./commands/${file}`;
       const command: Command = await import(filePath);
 
@@ -67,11 +61,11 @@ export default class Discord {
         console.log(
           `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
         );
-        return;
+        continue;
       }
 
       commands.set(command.data.name, command);
-    });
+    }
     return commands;
   }
 

@@ -13,7 +13,13 @@ const eventsPath = path.join(rootPath, "out", "discord", "events");
 
 export { botChannelId, loungeChannelId, studytimeDatabaseId, usersDatabaseId };
 export { commandsPath, eventsPath };
-export { DISCORD_TOKEN, CLIENT_ID, GUILD_ID, NOTION_TOKEN } from "./dotenv.js";
+export {
+  NODE_ENV,
+  DISCORD_TOKEN,
+  CLIENT_ID,
+  GUILD_ID,
+  NOTION_TOKEN,
+} from "./dotenv.js";
 
 export function getFiles(path: string) {
   const files = fs.readdirSync(path).filter((file) => file.endsWith(".js"));
