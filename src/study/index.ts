@@ -2,11 +2,44 @@ import Discord from "../discord/index.js";
 import User from "../user/index.js";
 import Notion from "../notion/index.js";
 
-interface StudySession {
+interface IStudySession {
   pageId: string;
   startTime: Date;
-  endTime?: Date;
-  isEarlyEnded?: boolean;
+  endTime: Date | null;
+  isEarlyEnded: boolean;
+  restTime: Date | null;
+  totalRestTime: number;
+}
+
+class StudySession implements IStudySession {
+  pageId: string;
+  startTime: Date;
+  endTime: Date | null;
+  isEarlyEnded: boolean;
+  restTime: Date | null;
+  totalRestTime: number;
+
+  constructor(pageId: string, startTime: Date) {
+    this.pageId = pageId;
+    this.startTime = startTime;
+    this.endTime = null;
+    this.isEarlyEnded = false;
+    this.restTime = null;
+    this.totalRestTime = 0;
+  }
+
+  public isRest() {
+    return !!this.restTime;
+  }
+
+  public startRest(now: Date) {
+    this.restTime = now;
+  }
+
+  public endRest(now: Date) {
+    this.totalRestTime += now.getTime() - this.restTime!.getTime();
+    this.restTime = null;
+  }
 }
 
 export default class Study {
@@ -30,33 +63,32 @@ export default class Study {
       try {
         page = await Notion.createStudyPage(name, notion.id, now);
         if (!page) {
-          return false;
+          return;
         }
       } catch (error: any) {
         console.error(
           `src/study/index.ts::startStudy(${userId}) > ${error.code}: ${error.message}`
         );
-        return false;
+        return;
       }
-      studySession = {
-        pageId: page.id,
-        startTime: now,
-      };
+      studySession = new StudySession(page.id, now);
       this.sessionMap.set(userId, studySession);
     } else if (studySession.isEarlyEnded) {
       studySession.isEarlyEnded = false;
       await Notion.restorePage(studySession.pageId);
     }
-    return true;
   }
 
   public static async end(userId: string) {
     const studySession: StudySession | undefined = this.sessionMap.get(userId);
     if (studySession === undefined) {
-      return false;
+      return;
     }
     const duration = User.getDuration(userId) * 60 * 1000;
     const now = new Date();
+    if (studySession.isRest()) {
+      studySession.endRest(now);
+    }
     studySession.endTime = now;
     if (now.getTime() - studySession.startTime.getTime() <= duration) {
       // too short study session - ignore
@@ -67,10 +99,14 @@ export default class Study {
         console.error(`Fail to delete page ${studySession.pageId}`, error);
         this.sessionMap.delete(userId);
       }
-      return false;
+      return;
     }
     try {
-      await Notion.updateEndTime(studySession.pageId, now);
+      await Notion.updateEnd(
+        studySession.pageId,
+        now,
+        studySession.totalRestTime
+      );
     } catch (error: any) {
       console.error(
         `src/study/index.ts::endStudy(${userId}) ${error.code}: ${error.message}`
@@ -79,14 +115,37 @@ export default class Study {
         // notion page is deleted before the user finishes their study session
         this.sessionMap.delete(userId);
       }
-      return false;
     }
-    return true;
   }
 
-  rest() {
-    // TODO
+  public static rest(userId: string) {
+    const studySession = this.sessionMap.get(userId);
+    if (studySession === undefined) {
+      return undefined;
+    }
+    const now = new Date();
+    if (studySession.isRest()) {
+      studySession.endRest(now);
+      return false;
+    } else {
+      studySession.startRest(now);
+      return true;
+    }
   }
+
+  // private static isRest(studySession: StudySession) {
+  //   return !!studySession.restTime;
+  // }
+
+  // private static startRest(studySession: StudySession, now: Date) {
+  //   studySession.restTime = now;
+  // }
+
+  // private static endRest(studySession: StudySession, now: Date) {
+  //   studySession.totalRestTime +=
+  //     now.getMinutes() - studySession.restTime!.getMinutes();
+  //   studySession.restTime = null;
+  // }
 
   showRank() {
     // TODO
