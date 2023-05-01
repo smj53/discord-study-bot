@@ -67,11 +67,16 @@ export default class Notion {
   }
 
   /**
-   * Update end time of the study notion page
+   * Update the study notion page
    * @param {string} pageId page id of the notion page
-   * @param {Date} endTime
+   * @param {Date} endTime time when the study session is ended
+   * @param {number} totalRest total rest time in milisecond
    */
-  public static async updateEndTime(pageId: string, endTime: Date) {
+  public static async updateEnd(
+    pageId: string,
+    endTime: Date,
+    totalRest: number
+  ) {
     await this.updatePage({
       page_id: pageId,
       properties: {
@@ -80,6 +85,9 @@ export default class Notion {
             start: getKorISOString(endTime),
             end: null,
           },
+        },
+        "휴식 시간 (분)": {
+          number: Math.floor(totalRest / 60000),
         },
       },
       archived: false,
