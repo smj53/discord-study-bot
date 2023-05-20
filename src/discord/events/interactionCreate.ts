@@ -1,5 +1,5 @@
 import { CacheType, Events, Interaction } from "discord.js";
-import { DiscordClient } from "../../utils/types.js";
+import { DiscordClient } from "..";
 
 const name = Events.InteractionCreate;
 

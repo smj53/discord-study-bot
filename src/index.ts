@@ -1,9 +1,10 @@
-import Discord from "./discord/index.js";
-import Notion from "./notion/index.js";
-import User from "./user/index.js";
+import Discord from "./discord";
+import Notion from "./notion";
+import User from "./user";
 
-(async () => {
+async function run() {
   Notion.init();
-  Discord.init();
-  User.init();
-})();
+  await Discord.init();
+  await User.init();
+}
+run();

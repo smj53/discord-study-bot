@@ -5,7 +5,7 @@ import {
   DISCORD_TOKEN,
   getFiles,
   GUILD_ID,
-} from "./utils/index.js";
+} from "./utils";
 
 const commands = [];
 const commandFiles = getFiles(commandsPath);
@@ -16,7 +16,7 @@ const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 // and deploy your commands!
 (async () => {
   for (const file of commandFiles) {
-    const command = await import(`./commands/${file}`);
+    const command = await import(`./discord/commands/${file}`);
     commands.push(command.data.toJSON());
   }
 

@@ -1,18 +1,29 @@
 import {
+  Client,
+  ClientOptions,
   Collection,
   Events,
   GatewayIntentBits,
   TextChannel,
   User,
 } from "discord.js";
-import { Command, DiscordClient, Event } from "../utils/types.js";
 import {
   commandsPath,
   eventsPath,
   getFiles,
   DISCORD_TOKEN,
   botChannelId,
-} from "../utils/index.js";
+} from "../utils";
+import { Command, Event } from "discord-study-bot";
+
+export class DiscordClient extends Client {
+  public commands: Collection<string, Command>;
+
+  constructor(options: ClientOptions, commands: Collection<string, Command>) {
+    super(options);
+    this.commands = commands;
+  }
+}
 
 export default class Discord {
   private static client: DiscordClient;

@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "discord bot for study",
   "main": "src/index.js",
-  "author": "chshin59",
+  "contributors": [
+    "chshin59",
+    "smj53"
+  ],
   "type": "module",
   "scripts": {
-    "start": "npm run build && node ./out/index.js",
-    "commands": "node ./out/deploy-commands.js",
+    "start": "npm run build && node --experimental-modules --es-module-specifier-resolution=node ./out/index.js",
+    "commands": "npm run build && node --experimental-modules --es-module-specifier-resolution=node ./out/deploy-commands.js",
     "build": "tsc --build"
   },
   "dependencies": {
