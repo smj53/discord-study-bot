@@ -5,8 +5,8 @@ import Notion from "../notion/index.js";
 interface StudySession {
   pageId: string;
   startTime: Date;
-  endTime?: Date;
-  isEarlyEnded?: boolean;
+  endTime: Date | null;
+  isEarlyEnded: boolean;
   restTime: Date | null;
   totalRestTime: number;
 }
@@ -44,6 +44,8 @@ export default class Study {
         pageId: page.id,
         startTime: now,
         restTime: null,
+        endTime: null,
+        isEarlyEnded: false,
         totalRestTime: 0,
       };
       this.sessionMap.set(userId, studySession);
@@ -51,6 +53,7 @@ export default class Study {
       studySession.isEarlyEnded = false;
       await Notion.restorePage(studySession.pageId);
     }
+    studySession.endTime = null;
   }
 
   public static async end(userId: string) {
@@ -94,7 +97,7 @@ export default class Study {
 
   public static rest(userId: string) {
     const studySession = this.sessionMap.get(userId);
-    if (studySession === undefined) {
+    if (studySession === undefined || studySession.endTime !== null) {
       return undefined;
     }
     const now = new Date();
