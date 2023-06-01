@@ -5,9 +5,6 @@ import url from "url";
 // Dotenv
 export * from "./dotenv";
 
-// time functions
-export * from "./time";
-
 // Discord Channel
 export const botChannelId = "1072156767980625950";
 export const loungeChannelId = "1068129906686439438";
@@ -25,4 +22,12 @@ export const eventsPath = path.join(rootPath, "out", "discord", "events");
 export function getFiles(path: string) {
   const files = fs.readdirSync(path).filter((file) => file.endsWith(".js"));
   return files;
+}
+
+const KR_TIME_DIFF = 9;
+
+export function getKorISOString(date: Date): string {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() + KR_TIME_DIFF);
+  return `${newDate.toISOString().substring(0, 19)}+09:00`;
 }

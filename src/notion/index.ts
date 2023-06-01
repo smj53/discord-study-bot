@@ -1,10 +1,5 @@
 import { Client } from "@notionhq/client";
-import {
-  studytimeDatabaseId,
-  NOTION_TOKEN,
-  getCurrentKoreanTime,
-  getKorISOString,
-} from "../utils";
+import { studytimeDatabaseId, NOTION_TOKEN, getKorISOString } from "../utils";
 import {
   CreatePageParameters,
   UpdatePageParameters,
@@ -43,7 +38,6 @@ export default class Notion {
     notionUserId: string,
     startTime: Date
   ) {
-    const korStartTime = getCurrentKoreanTime(startTime);
     const response = await this.createPage({
       parent: {
         type: "database_id",
@@ -55,8 +49,8 @@ export default class Notion {
             {
               text: {
                 content: `${
-                  korStartTime.getUTCMonth() + 1
-                }/${korStartTime.getUTCDate()} ${name}`,
+                  startTime.getMonth() + 1
+                }/${startTime.getDate()} ${name}`,
               },
             },
           ],
