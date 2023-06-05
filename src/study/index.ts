@@ -1,6 +1,7 @@
-import Discord from "../discord/index.js";
-import User from "../user/index.js";
-import Notion from "../notion/index.js";
+import Discord from "../discord";
+import User from "../user";
+import Notion from "../notion";
+import { CreatePageResponse } from "@notionhq/client/build/src/api-endpoints";
 
 interface StudySession {
   pageId: string;
@@ -23,7 +24,7 @@ export default class Study {
 
     let studySession: StudySession | undefined = this.sessionMap.get(userId);
     const now = new Date();
-    let page: any;
+    let page: CreatePageResponse;
     if (
       studySession === undefined ||
       !studySession.endTime ||

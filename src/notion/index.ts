@@ -1,6 +1,14 @@
 import { Client } from "@notionhq/client";
-import { getCurrentKoreanTime, getKorISOString } from "../utils/time.js";
-import { studytimeDatabaseId, NOTION_TOKEN } from "../utils/index.js";
+import { studytimeDatabaseId, NOTION_TOKEN, getKorISOString } from "../utils";
+import {
+  CreatePageParameters,
+  UpdatePageParameters,
+} from "@notionhq/client/build/src/api-endpoints";
+import {
+  NotionAPIRequestType,
+  NotionAPIResponseType,
+  WithAuth,
+} from "discord-study-bot";
 
 export default class Notion {
   private static notion: Client;
@@ -30,7 +38,6 @@ export default class Notion {
     notionUserId: string,
     startTime: Date
   ) {
-    const korStartTime = getCurrentKoreanTime(startTime);
     const response = await this.createPage({
       parent: {
         type: "database_id",
@@ -42,8 +49,8 @@ export default class Notion {
             {
               text: {
                 content: `${
-                  korStartTime.getUTCMonth() + 1
-                }/${korStartTime.getUTCDate()} ${name}`,
+                  startTime.getMonth() + 1
+                }/${startTime.getDate()} ${name}`,
               },
             },
           ],
@@ -107,24 +114,26 @@ export default class Notion {
     });
   }
 
-  private static async createPage(obj: any) {
+  private static async createPage(obj: WithAuth<CreatePageParameters>) {
     return await this.catchCommonError(this.notion.pages.create, obj);
   }
 
-  private static async updatePage(obj: any) {
+  private static async updatePage(obj: WithAuth<UpdatePageParameters>) {
     await this.catchCommonError(this.notion.pages.update, obj);
   }
 
-  private static async catchCommonError(func: any, obj: any) {
+  private static async catchCommonError<
+    P extends NotionAPIRequestType,
+    R extends NotionAPIResponseType
+  >(func: (args: WithAuth<P>) => Promise<R>, obj: WithAuth<P>) {
     try {
       return await func(obj);
     } catch (error: any) {
       if (error.status === 401) {
         // invalid token key
-        console.error(`src/utils/notion.js: ${error.code}: ${error.message}`);
-      } else {
-        throw error;
+        console.error(`src/notion/index.js: ${error.code}: ${error.message}`);
       }
+      throw error;
     }
   }
 }

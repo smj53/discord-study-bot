@@ -1,7 +1,7 @@
-import Discord from "../discord/index.js";
-import Notion from "../notion/index.js";
-import { usersDatabaseId } from "../utils/index.js";
-import { DiscordUser, Duration, Name, NotionUser } from "../utils/types.js";
+import Discord from "../discord";
+import Notion from "../notion";
+import { usersDatabaseId } from "../utils";
+import { DiscordUser, Duration, Name, NotionUser } from "discord-study-bot";
 
 export default class User {
   private static users: User[];

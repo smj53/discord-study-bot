@@ -1,6 +1,6 @@
 import { Events, VoiceState } from "discord.js";
-import Study from "../../study/index.js";
-import { loungeChannelId } from "../../utils/index.js";
+import Study from "../../study";
+import { loungeChannelId } from "../../utils";
 
 const name = Events.VoiceStateUpdate;
 

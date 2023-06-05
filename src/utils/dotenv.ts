@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 
+process.env.TZ = "Asia/Seoul";
+
 dotenv.config();
 
 function typeGuard(env: string | undefined) {
