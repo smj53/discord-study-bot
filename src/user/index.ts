@@ -40,7 +40,7 @@ class StudySession {
 }
 
 export default class User {
-  private static users: User[];
+  private static users: Map<string, User>;
   readonly name: Name;
   readonly discord: DiscordUser;
   readonly notion: NotionUser;
@@ -57,7 +57,6 @@ export default class User {
   studySession: StudySession | null;
 
   public static async init(): Promise<void> {
-    const users: User[] = [];
     const response = await Notion.readDatabase(usersDatabaseId);
 
     for (const result of response.results as any[]) {
@@ -70,10 +69,8 @@ export default class User {
       const notionUser: NotionUser = result.properties["사람"].people[0];
 
       const user = new User(name, duration, discordUser, notionUser);
-      users.push(user);
+      this.users.set(discordId, user);
     }
-
-    this.users = users;
   }
 
   private constructor(
@@ -91,7 +88,7 @@ export default class User {
   // 외부에서 유저객체를 찾아와서 user.method() 형태로 함수를 사용하기 위해 public으로 변경
   // 조금 복잡해지는 감이 있어 변경을 생각해보아야 할 듯(ex. voiceStateUpdate.ts에서 if-else 문에서 중복 코드 발생)
   public static findUserByDiscordId(discordId: string): User {
-    const user = this.users.find((user) => user.discord.id === discordId);
+    const user = this.users.get(discordId);
     if (!user) {
       throw Error("Cannot find user by discord id");
     }
