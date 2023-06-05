@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import Study from "../../study/index.js";
+import User from "../../user/index.js";
 
 const data = new SlashCommandBuilder()
   .setName("휴식")
@@ -7,7 +7,8 @@ const data = new SlashCommandBuilder()
 
 async function execute(interaction: ChatInputCommandInteraction) {
   let msg = "";
-  const res = Study.rest(interaction.user.id);
+  const user = User.findUserByDiscordId(interaction.user.id);
+  const res = user.rest();
   if (res === undefined) {
     msg = "모각코 중이 아닙니다.";
   } else if (res) {
